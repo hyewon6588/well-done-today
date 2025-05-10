@@ -28,7 +28,9 @@ export default function SignupPage() {
         throw new Error(data.detail || "Signup failed");
       }
 
-      router.push("/login");
+      const data = await res.json();
+      localStorage.setItem("token", data.access_token);
+      router.push("/write");
     } catch (err: any) {
       setError(err.message);
     }
