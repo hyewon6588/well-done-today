@@ -2,11 +2,9 @@ from app.db.mongodb import notifications_collection
 from bson import ObjectId
 
 def mark_as_read(user_id: str, date: str):
-    # iso_prefix = date
     notifications_collection.update_one(
         {
             "user_id": user_id
-            # "date": {"$regex": f"^{iso_prefix}"}
         },
         {"$set": {"read": True}},
         upsert=True

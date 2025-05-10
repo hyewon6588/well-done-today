@@ -6,6 +6,7 @@ import { Bell } from "lucide-react"
 export default function Navbar() {
   const router = useRouter()
   const [hasUnread, setHasUnread] = useState(false)
+  const [showMessage, setShowMessage] = useState(false)
 
   useEffect(() => {
     const token = localStorage.getItem("token")
@@ -24,6 +25,10 @@ export default function Navbar() {
     localStorage.removeItem("token")
     router.push("/login")
   }
+  const toggleNotification = () => {
+    if (hasUnread) setShowMessage(!showMessage)
+  }
+
 
   return (
     <nav className="w-full bg-yellow-400 border-b shadow-sm py-3 px-6 flex justify-between items-center">
@@ -32,11 +37,18 @@ export default function Navbar() {
         <Link href="/write" className="text-amber-800 hover:text-yellow-900">Write</Link>
         <Link href="/inbox" className="text-amber-800 hover:text-yellow-900">Inbox</Link>
         <div className="relative inline-block">
+        <button onClick={toggleNotification}>
           <Bell className="w-5 h-5 text-amber-800" />
           {hasUnread && (
             <span className="absolute top-0 right-0 block w-2 h-2 rounded-full bg-red-500"></span>
           )}
-      </div>
+          </button>
+          {showMessage && (
+            <div className="absolute left-1 transform -translate-x-2/3 top-7 mt-1 bg-amber-50 text-sm text-amber-800 shadow-md rounded px-3 py-2 z-50 w-64">
+              You have unread responses from your WellDone Buddy
+            </div>
+          )}
+        </div>
         <button onClick={handleLogout} className="text-amber-800 hover:text-yellow-900">Sign out</button>
       </div>
     </nav>
