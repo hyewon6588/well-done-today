@@ -1,16 +1,19 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException,BackgroundTasks
 from app.models.entry import EntryCreate
 from app.db.mongodb import entries_collection
 from app.utils.auth import get_current_user
 from app.utils.entries import save_entry, get_today_entry
+from app.utils.ai_reply import generate_ai_reply
 
 router = APIRouter(prefix="/entries")
 
 @router.post("")
-async def create_entry(data: EntryCreate, user=Depends(get_current_user)):
+async def create_entry(data: EntryCreate,background_tasks:BackgroundTasks, user=Depends(get_current_user)):
     saved = await save_entry(user_id=str(user["_id"]), items=data.items)
     if not saved:
         raise HTTPException(status_code=400, detail="Entry for today already exists")
+    
+    background_tasks.add_task(generate_ai_reply, saved, data.items)
     return {"message": "Entry saved", "id": saved}
 
 @router.get("")

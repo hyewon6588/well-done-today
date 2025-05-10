@@ -43,14 +43,18 @@ export default function InboxPage() {
     const token = localStorage.getItem("token")
     if (!selectedDate || !token) return
 
-    fetch(`http://localhost:8000/entries/today`, {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-      .then(res => res.json())
-      .then(data => {
-        setEntry(data.entry)
-      })
-  }, [selectedDate])
+    const fetchEntry = () => {
+        fetch("http://localhost:8000/entries/today", {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+          .then(res => res.json())
+          .then(data => setEntry(data.entry))
+      }
+
+      fetchEntry()
+      const interval = setInterval(fetchEntry, 10000)
+      return () => clearInterval(interval)
+    }, [selectedDate])
 
   return (
     <>
@@ -89,7 +93,7 @@ export default function InboxPage() {
                 <div className="space-y-2 bg-yellow-100 p-4 rounded shadow">
                   <div className="flex items-center gap-2">
                     <Sparkles className="text-yellow-500" />
-                    <h3 className="font-semibold">AI's Kind Reply</h3>
+                    <h3 className="font-semibold">From your WellDone buddy</h3>
                   </div>
                   <p className="text-gray-800">{entry.ai_reply}</p>
                 </div>
