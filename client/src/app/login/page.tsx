@@ -50,17 +50,15 @@ export default function SignupPage() {
               <Mail className="h-10 w-10 text-yellow-500" />
             </div>
             <h1 className="text-4xl font-bold text-slate-800">
-              Welcome to <br /> WellDoneToday
+              Good to see you again.
             </h1>
-            <p className="text-slate-700 text-lg mt-6">
-              <strong>WellDoneToday</strong> is a daily self-reflection tool
-              that helps you log what you did well and receive encouraging
-              replies from AI.
+            <p className="text-slate-700 text-lg mt-3">
+              Pick up where you left off, reflect on what went well, and receive words of encouragement — one message at a time.
             </p>
             <div className="flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-amber-600 fill-amber-600" />
               <p className="text-slate-700 italic">
-                "Your inbox of encouragement, one message at a time."
+                "Today’s small wins, worth celebrating."
               </p>
             </div>
           </div>
