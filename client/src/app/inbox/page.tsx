@@ -20,6 +20,7 @@ export default function InboxPage() {
   const [entryDates, setEntryDates] = useState<EntryMeta[]>([])
   const [selectedDate, setSelectedDate] = useState<string>("")
   const [entry, setEntry] = useState<Entry | null>(null)
+  const [hasMarkedRead, setHasMarkedRead] = useState(false)
   const router = useRouter()
 
   useEffect(() => {
@@ -48,7 +49,19 @@ export default function InboxPage() {
           headers: { Authorization: `Bearer ${token}` }
         })
           .then(res => res.json())
-          .then(data => setEntry(data.entry))
+          .then(data => {
+            setEntry(data.entry)
+            if (data.entry?.ai_reply && !hasMarkedRead) {
+                fetch("http://localhost:8000/notifications/mark-read", {
+                  method: "POST",
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                  },
+                  body: JSON.stringify({ date: data.entry.date })
+                }).then(() => setHasMarkedRead(true))
+              }
+          })
       }
 
       fetchEntry()
@@ -68,9 +81,11 @@ export default function InboxPage() {
               className={`text-left w-full px-2 py-1 rounded ${
                 selectedDate === date ? "bg-yellow-300 font-semibold" : "hover:bg-yellow-100"
               }`}
-              onClick={() => setSelectedDate(date)}
+              onClick={() => {
+                setSelectedDate(date)
+              }}
             >
-              {date} {has_ai_reply && <span className="text-yellow-600">★</span>}
+              {date} 
             </button>
           ))}
         </div>

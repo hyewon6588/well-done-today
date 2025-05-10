@@ -13,7 +13,7 @@ async def create_entry(data: EntryCreate,background_tasks:BackgroundTasks, user=
     if not saved:
         raise HTTPException(status_code=400, detail="Entry for today already exists")
     
-    background_tasks.add_task(generate_ai_reply, saved, data.items)
+    background_tasks.add_task(generate_ai_reply, saved,str(user["_id"]), data.items)
     return {"message": "Entry saved", "id": saved}
 
 @router.get("")

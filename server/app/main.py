@@ -1,11 +1,12 @@
 from fastapi import FastAPI
-from app.api import auth,entries
+from app.api import auth,entries,notification
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.utils import get_openapi
 
 app = FastAPI()
 app.include_router(auth.router)
 app.include_router(entries.router)
+app.include_router(notification.router)
 
 app.add_middleware(
     CORSMiddleware,

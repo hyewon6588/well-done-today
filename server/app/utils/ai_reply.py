@@ -3,7 +3,11 @@ import os
 from typing import List
 from openai import OpenAI
 from bson import ObjectId
+from fastapi import Depends
+import datetime
 from app.db.mongodb import db
+from app.utils.notification import insert_unread_notification
+from app.utils.auth import get_current_user
 
 entries_collection = db["entries"]
 
@@ -25,8 +29,8 @@ def format_reflection_prompt(items: List[str]) -> str:
         Now write your reply:
         """.strip()
 
-def generate_ai_reply(entry_id: str, items: List[str]):
-    time.sleep(300)  # 5 minutes delay
+def generate_ai_reply(entry_id: str, user_id: str, items: List[str]):
+    time.sleep(60)  # 5 minutes delay
 
     prompt = format_reflection_prompt(items)
     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
@@ -40,7 +44,9 @@ def generate_ai_reply(entry_id: str, items: List[str]):
         print(f"[AI Error] {e}")
         reply = "AI was unable to generate a reply this time."
 
+    insert_unread_notification(user_id, datetime.datetime.utcnow().isoformat())
     entries_collection.update_one(
         { "_id": ObjectId(entry_id) },
         { "$set": { "ai_reply": reply } }
     )
+    
