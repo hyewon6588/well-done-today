@@ -59,7 +59,12 @@ export default function InboxPage() {
                     "Content-Type": "application/json"
                   },
                   body: JSON.stringify({ date: data.entry.date })
-                }).then(() => setHasMarkedRead(true))
+                }).then(() => {
+                    console.log("[Navbar] Unread status is", data.unread)
+                    setHasMarkedRead(true)
+                })
+                console.log("[InboxPage] Dispatching notification-read")
+                window.dispatchEvent(new Event("notification-read"))
               }
           })
       }

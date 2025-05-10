@@ -18,26 +18,26 @@ export default function WritePage() {
 
   const [alreadySubmitted, setAlreadySubmitted] = useState(false)
   const [checkedToday, setCheckedToday] = useState(false)
-
-  useEffect(() => {
-    const checkTodayEntry = async () => {
-      try {
-        const token = localStorage.getItem("token")
-        const res = await fetch("http://localhost:8000/entries/today", {
-          headers: {
-            "Authorization": `Bearer ${token}`
-          }
-        })
-        const data = await res.json()
-        if (data.entry) {
-          setAlreadySubmitted(true)
+  const checkTodayEntry = async () => {
+    try {
+      const token = localStorage.getItem("token")
+      const res = await fetch("http://localhost:8000/entries/today", {
+        headers: {
+          "Authorization": `Bearer ${token}`
         }
-      } catch (err) {
-        console.error("Failed to check today's entry", err)
-      } finally {
-        setCheckedToday(true)
+      })
+      const data = await res.json()
+      if (data.entry) {
+        setAlreadySubmitted(true)
       }
+    } catch (err) {
+      console.error("Failed to check today's entry", err)
+    } finally {
+      setCheckedToday(true)
     }
+  }
+  useEffect(() => {
+    
 
     checkTodayEntry()
   }, [])
@@ -71,7 +71,10 @@ export default function WritePage() {
         throw new Error("Failed to save entry.")
       } else {
         setSuccess(true)
-        setTimeout(() => router.push("/inbox"), 1000)
+        
+        setTimeout(() =>
+            checkTodayEntry()
+        , 1000)
       }
     } catch (err) {
       setError("Something went wrong. Please try again.")
@@ -128,7 +131,7 @@ export default function WritePage() {
                                 ))}
 
                                 {error && <p className="text-sm text-red-500">{error}</p>}
-                                {success && <p className="text-sm text-green-600">Saved! Redirecting...</p>}
+                                {success && <p className="text-sm text-green-600">Saved!</p>}
 
                                 <Button
                                 onClick={handleSubmit}
