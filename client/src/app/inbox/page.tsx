@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import Navbar from "@/components/NavBar"
+import Navbar from "../../components/NavBar"
 import { Sparkles } from "lucide-react"
 
 type EntryMeta = {

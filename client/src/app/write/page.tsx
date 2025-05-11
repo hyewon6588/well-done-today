@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { Card, CardContent } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "../../components/ui/card"
+import { Input } from "../../components/ui/input"
+import { Button } from "../../components/ui/button"
 import { Sparkles,Inbox } from "lucide-react"
-import Navbar from "@/components/NavBar"
+import Navbar from "../../components/NavBar"
 
 const baseurl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
 
