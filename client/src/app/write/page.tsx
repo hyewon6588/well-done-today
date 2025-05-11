@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button"
 import { Sparkles,Inbox } from "lucide-react"
 import Navbar from "@/components/NavBar"
 
+const baseurl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+
 export default function WritePage() {
   const router = useRouter()
 
@@ -21,7 +23,7 @@ export default function WritePage() {
   const checkTodayEntry = async () => {
     try {
       const token = localStorage.getItem("token")
-      const res = await fetch("http://localhost:8000/entries/today", {
+      const res = await fetch(baseurl+"/entries/today", {
         headers: {
           "Authorization": `Bearer ${token}`
         }
@@ -56,7 +58,7 @@ export default function WritePage() {
 
     try {
       const token = localStorage.getItem("token")
-      const res = await fetch("http://localhost:8000/entries", {
+      const res = await fetch(baseurl+"/entries", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -7,6 +7,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Mail, Sparkles } from "lucide-react";
 
+const baseurl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+
 export default function SignupPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -22,7 +24,7 @@ export default function SignupPage() {
     }
 
     try {
-      const res = await fetch("http://localhost:8000/auth/register", {
+      const res = await fetch(baseurl+"/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),

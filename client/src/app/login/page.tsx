@@ -15,9 +15,11 @@ export default function SignupPage() {
   const [error, setError] = useState("");
   const [isFocused, setIsFocused] = useState(false);
 
+  const baseurl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+
   const handleLogin = async () => {
     try {
-      const res = await fetch("http://localhost:8000/auth/login", {
+      const res = await fetch(baseurl+"/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -25,7 +27,7 @@ export default function SignupPage() {
 
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.detail || "Signup failed");
+        throw new Error(data.detail || "Login Failed");
       }
 
       const data = await res.json();

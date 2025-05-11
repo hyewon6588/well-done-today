@@ -3,6 +3,8 @@ import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { Bell } from "lucide-react"
 
+const baseurl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+
 export default function Navbar() {
   const router = useRouter()
   const [hasUnread, setHasUnread] = useState(false)
@@ -13,7 +15,7 @@ export default function Navbar() {
     if (!token) return
 
     const fetchUnread = () => {
-      fetch("http://localhost:8000/notifications/unread", {
+      fetch(baseurl+"/notifications/unread", {
         headers: { Authorization: `Bearer ${token}` },
       })
         .then(res => res.json())

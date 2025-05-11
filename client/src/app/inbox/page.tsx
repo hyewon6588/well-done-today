@@ -16,6 +16,8 @@ type Entry = {
   ai_reply?: string
 }
 
+const baseurl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+
 export default function InboxPage() {
   const [entryDates, setEntryDates] = useState<EntryMeta[]>([])
   const [selectedDate, setSelectedDate] = useState<string>("")
@@ -30,7 +32,7 @@ export default function InboxPage() {
       return
     }
 
-    fetch("http://localhost:8000/entries", {
+    fetch(baseurl+"/entries", {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => res.json())
@@ -45,14 +47,14 @@ export default function InboxPage() {
     if (!selectedDate || !token) return
 
     const fetchEntry = () => {
-        fetch("http://localhost:8000/entries/today", {
+        fetch(baseurl+"/entries/today", {
           headers: { Authorization: `Bearer ${token}` }
         })
           .then(res => res.json())
           .then(data => {
             setEntry(data.entry)
             if (data.entry?.ai_reply && !hasMarkedRead) {
-                fetch("http://localhost:8000/notifications/mark-read", {
+                fetch(baseurl+"/notifications/mark-read", {
                   method: "POST",
                   headers: {
                     Authorization: `Bearer ${token}`,
