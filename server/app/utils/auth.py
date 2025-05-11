@@ -1,5 +1,5 @@
 from passlib.context import CryptContext
-from jose import jwt
+from jose import JWTError,jwt
 from datetime import datetime, timedelta
 from fastapi import Request, HTTPException, status, Depends
 from app.db.mongodb import users_collection
