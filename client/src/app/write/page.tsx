@@ -32,8 +32,12 @@ export default function WritePage() {
       if (data.entry) {
         setAlreadySubmitted(true)
       }
-    } catch (err) {
-      console.error("Failed to check today's entry", err)
+    } catch (err:unknown) {
+        if (err instanceof Error) {
+            setError(err.message)
+        } else {
+            setError("Failed to check today's entry.")
+        }
     } finally {
       setCheckedToday(true)
     }
@@ -78,8 +82,12 @@ export default function WritePage() {
             checkTodayEntry()
         , 1000)
       }
-    } catch (err) {
-      setError("Something went wrong. Please try again.")
+    } catch (err:unknown) {
+        if (err instanceof Error) {
+            setError(err.message)
+        } else {
+            setError("Something went wrong. Please try again.")
+        }
     } finally {
       setLoading(false)
     }
@@ -97,7 +105,7 @@ export default function WritePage() {
                 <Inbox className="text-yellow-500 w-6 h-6" />
               </div>
               <h2 className="text-2xl font-bold text-slate-800">
-                You've already submitted today's reflection!
+                You&apos;ve already submitted today&apos;s reflection!
               </h2>
               <p className="text-slate-600">
                 Check your inbox to see your entry and encouraging replies.

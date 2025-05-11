@@ -82,7 +82,7 @@ export default function InboxPage() {
       <div className="h-[calc(100vh-56px)] flex bg-amber-50 text-slate-800">
         {/* Sidebar with dates */}
         <div className="w-48 border-r border-gray-300 p-4 space-y-2 overflow-y-auto">
-          {entryDates.map(({ date, has_ai_reply }) => (
+          {entryDates.map(({ date }) => (
             <button
               key={date}
               className={`text-left w-full px-2 py-1 rounded ${

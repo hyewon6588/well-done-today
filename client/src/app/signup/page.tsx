@@ -15,7 +15,6 @@ export default function SignupPage() {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [error, setError] = useState("");
-  const [isFocused, setIsFocused] = useState(false);
 
   const handleSignup = async () => {
     if (password !== confirm) {
@@ -36,8 +35,12 @@ export default function SignupPage() {
       }
 
       router.push("/login");
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err:unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+      setError("An unknown error occurred.");
+      }
     }
   };
 
@@ -67,7 +70,7 @@ export default function SignupPage() {
             <div className="flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-amber-600 fill-amber-600" />
               <p className="text-slate-700 italic">
-                "Your inbox of encouragement, one message at a time."
+                &quot;Your inbox of encouragement, one message at a time.&quot;
               </p>
             </div>
           </div>

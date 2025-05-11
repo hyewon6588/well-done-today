@@ -11,9 +11,7 @@ export default function SignupPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirm, setConfirm] = useState("");
   const [error, setError] = useState("");
-  const [isFocused, setIsFocused] = useState(false);
 
   const baseurl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
 
@@ -33,8 +31,10 @@ export default function SignupPage() {
       const data = await res.json();
       localStorage.setItem("token", data.access_token);
       router.push("/write");
-    } catch (err: any) {
+    } catch (err:unknown) {
+      if (err instanceof Error) {
       setError(err.message);
+      }
     }
   };
 
@@ -62,7 +62,7 @@ export default function SignupPage() {
             <div className="flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-amber-600 fill-amber-600" />
               <p className="text-slate-700 italic">
-                "Today’s small wins, worth celebrating."
+                &quot;Today&apos;s small wins, worth celebrating.&quot;
               </p>
             </div>
           </div>
@@ -97,7 +97,7 @@ export default function SignupPage() {
             </Button>
 
             <p className="text-sm text-center text-slate-600">
-              Don't have an account yet?{" "}
+              Don&apos;t have an account yet?{" "}
               <a
                 href="/signup"
                 className="text-[#D89031] font-semibold hover:underline"
