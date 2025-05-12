@@ -40,6 +40,7 @@ export default function InboxPage() {
         setEntryDates(data)
         if (data.length > 0) setSelectedDate(data[0].date)
       })
+    
   }, [])
 
   useEffect(() => {
