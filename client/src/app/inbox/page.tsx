@@ -48,12 +48,12 @@ export default function InboxPage() {
     if (!selectedDate || !token) return
 
     const fetchEntry = () => {
-        fetch(baseurl+"/entries/today", {
+        fetch(baseurl+`/entries/${selectedDate}`, {
           headers: { Authorization: `Bearer ${token}` }
         })
           .then(res => res.json())
           .then(data => {
-            setEntry(data.entry)
+            setEntry(data)
             if (data.entry?.ai_reply && !hasMarkedRead) {
                 fetch(baseurl+"/notifications/mark-read", {
                   method: "POST",

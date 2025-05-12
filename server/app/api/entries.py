@@ -36,3 +36,16 @@ async def get_entry_dates(user: dict = Depends(get_current_user)):
 async def get_today(user=Depends(get_current_user)):
     entry = await get_today_entry(user_id=str(user["_id"]))
     return {"entry": entry}
+
+@router.get("/{date}")
+def get_entry_by_date(date: str, user= Depends(get_current_user)):
+    user_id=str(user["_id"])
+    entry = entries_collection.find_one({
+        "user_id": user_id,
+        "date": date
+    })
+    if entry:
+        entry["_id"] = str(entry["_id"])  # serialize for JSON
+        return entry
+    if not entry:
+        raise HTTPException(status_code=404, detail="Entry not found")
