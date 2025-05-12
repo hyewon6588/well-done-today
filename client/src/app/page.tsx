@@ -1,103 +1,124 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "../components/ui/button";
+import { Sparkles } from "lucide-react";
+import Navbar from "../components/NavBar";
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+const baseurl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
+const encouragementQuotes = [
+  "Progress isn’t always loud or obvious. Sometimes it’s simply showing up, trying again, and choosing not to quit.",
+  "Even the smallest effort toward your goal counts. You’re building resilience, one step at a time.",
+  "Growth happens quietly—each reflection, each small win, adds up in powerful ways.",
+  "You’re not behind. You’re exactly where you need to be to take your next step forward.",
+  "The fact that you showed up for yourself today is already something to be proud of."
+];
+
+export default function HomePage() {
+  const [hasSubmittedToday, setHasSubmittedToday] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [quote, setQuote] = useState("");
+  const router = useRouter();
+
+  useEffect(() => {
+    setQuote(encouragementQuotes[Math.floor(Math.random() * encouragementQuotes.length)]);
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setIsLoggedIn(false);
+      setLoading(false);
+      return;
+    }
+
+    setIsLoggedIn(true);
+
+    const checkTodayEntry = async () => {
+      try {
+        const res = await fetch(`${baseurl}/entries/today`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const data = await res.json();
+        if (data.entry) {
+          setHasSubmittedToday(true);
+        }
+      } catch (err) {
+        console.error("Failed to check today's entry", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkTodayEntry();
+  }, []);
+
+  const EncouragementCard = () => (
+    <div className="bg-white rounded-lg shadow p-10 w-full max-w-sm min-h-[250px] text-center flex flex-col justify-between">
+      <h2 className="text-2xl font-semibold text-slate-800">Encouragement</h2>
+      <Sparkles className="mx-auto text-yellow-500 fill-yellow-500 w-10 h-10" />
+      <p className="italic text-slate-600 text-lg">&quot;{quote}&quot;</p>
     </div>
+  );
+
+  return (
+    <>
+      {isLoggedIn &&  <Navbar />}
+      <main className={`${
+        isLoggedIn ? "min-h-[calc(100vh-60px)]" : "min-h-screen"
+      } bg-amber-100 flex flex-col justify-center items-center px-4 py-12`}>
+        <div className="text-center mb-10">
+          <h1 className="text-4xl font-bold text-slate-800 mb-3">Welcome to WellDoneToday</h1>
+          <p className="text-slate-700 text-lg max-w-xl">
+            Reflect on your day, celebrate small wins, and get kind encouragement from your WellDone Buddy.
+          </p>
+        </div>
+
+        {!loading && isLoggedIn ? (
+          <div className="flex flex-col md:flex-row gap-6 justify-center items-center">
+            {hasSubmittedToday ? (
+              <div className="bg-white rounded-lg shadow p-10 w-full max-w-sm min-h-[250px] text-center flex flex-col justify-between">
+                <h2 className="text-2xl font-semibold text-slate-800">Today&apos;s Entry Submitted</h2>
+                <p className="text-slate-600 text-lg">Check your inbox for your reply from your well done buddy!</p>
+                <Button
+                  className="w-full bg-yellow-500 hover:bg-yellow-600 text-white"
+                  onClick={() => router.push("/inbox")}
+                >
+                  Go to Inbox
+                </Button>
+              </div>
+            ) : (
+              <div className="bg-white rounded-lg shadow p-10 w-full max-w-sm min-h-[250px] text-center flex flex-col justify-between">
+                <h2 className="text-2xl font-semibold text-slate-800">Your Entries</h2>
+                <p className="text-slate-600 text-lg">You haven&apos;t written anything yet.
+                Reflect on a small win to get started.</p>
+                <Button
+                  className="bg-yellow-500 hover:bg-yellow-600 text-white mt-2"
+                  onClick={() => router.push("/write")}
+                >
+                  New Entry
+                </Button>
+              </div>
+            )}
+            <EncouragementCard />
+          </div>
+        ) : !loading && (
+          <div className="space-y-4 text-center">
+            {/* <h2 className="text-2xl font-semibold text-slate-800">Welcome!</h2> */}
+            <p className="text-slate-600">Please log in to start reflecting and receive encouragement.</p>
+            <Button
+              className="w-full bg-yellow-500 hover:bg-yellow-600 text-white"
+              onClick={() => router.push("/login")}
+            >
+              Log In
+            </Button>
+          </div>
+        )}
+      </main>
+    </>
   );
 }

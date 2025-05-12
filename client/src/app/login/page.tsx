@@ -30,7 +30,7 @@ export default function SignupPage() {
 
       const data = await res.json();
       localStorage.setItem("token", data.access_token);
-      router.push("/write");
+      router.push("/");
     } catch (err:unknown) {
       if (err instanceof Error) {
       setError(err.message);
